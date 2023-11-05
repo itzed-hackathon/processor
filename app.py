@@ -6,6 +6,7 @@ from websockets.server import serve
 import pyautogui
 import mouse
 import time
+from threading import Thread
 
 # 1536, 864
 size = pyautogui.size()
@@ -15,12 +16,21 @@ sh = 864
 bs = 300
 bsy = 200
 
-async def fwd():
-    pyautogui.keyDown('ctrl')
-    pyautogui.keyDown('w')
-    await asyncio.sleep(1)
-    pyautogui.keyUp('w')
-    pyautogui.keyUp('ctrl')
+walking = False
+
+def fwd():
+    global walking
+    if not walking:
+        pyautogui.keyDown('ctrl')
+        pyautogui.keyDown('w')
+        walking = True
+
+def unfwd():
+    global walking
+    if walking:
+        pyautogui.keyUp('ctrl')
+        pyautogui.keyUp('w')
+        walking = False
 
 async def echo(websocket):
     async for message in websocket:
@@ -56,8 +66,9 @@ async def echo(websocket):
 
         if y < sh/2+bsy and y > sh/2-bsy and x > sw/2-bs and x < sw/2+bs:
             print('onward!')
-            asyncio.create_task(fwd())
-
+            fwd()
+        else:
+            unfwd()
 
 async def main():
     async with serve(echo, "0.0.0.0", 5000):
