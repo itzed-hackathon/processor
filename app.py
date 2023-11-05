@@ -1,5 +1,5 @@
 import json
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS, cross_origin
 
 def main():
@@ -7,13 +7,13 @@ def main():
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
-    @app.route('/eye')
+    @app.route('/eye', methods=["POST", "OPTIONS"])
     @cross_origin()
     def eye():
         print(request.get_json())
 
         return json.dumps({
-            'cats': cats,
+            'cats': 6,
         })
 
     app.run()
