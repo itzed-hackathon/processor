@@ -21,14 +21,14 @@ walking = False
 def fwd():
     global walking
     if not walking:
-        pyautogui.keyDown('ctrl')
+        pyautogui.keyDown('alt')
         pyautogui.keyDown('w')
         walking = True
 
 def unfwd():
     global walking
     if walking:
-        pyautogui.keyUp('ctrl')
+        pyautogui.keyUp('alt')
         pyautogui.keyUp('w')
         walking = False
 
@@ -54,7 +54,8 @@ async def echo(websocket):
             #mouse.move(midp[0], pos[1], True, 0)
 
         print(y, sh/2+bsy)
-        if y > sh/2+bsy:
+        # y -= 20
+        if y > sh/2+bsy/2:
             print('down')
             mouse.move(0, 9, False, 0)
         elif y < sh/2-bsy:
@@ -71,7 +72,7 @@ async def echo(websocket):
             unfwd()
 
 async def main():
-    async with serve(echo, "0.0.0.0", 5000):
+    async with serve(echo, "localhost", 5001):
         await asyncio.Future()  # run forever
 
 asyncio.run(main())
