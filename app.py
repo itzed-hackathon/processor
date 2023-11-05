@@ -1,22 +1,14 @@
-import json
-from flask import Flask, request
-from flask_cors import CORS, cross_origin
+#!/usr/bin/env python
 
-def main():
-    app = Flask(__name__)
-    cors = CORS(app)
-    app.config['CORS_HEADERS'] = 'Content-Type'
+import asyncio
+from websockets.server import serve
 
-    @app.route('/eye', methods=["POST", "OPTIONS"])
-    @cross_origin()
-    def eye():
-        print(request.get_json())
+async def echo(websocket):
+    async for message in websocket:
+        print(message)
 
-        return json.dumps({
-            'cats': 6,
-        })
+async def main():
+    async with serve(echo, "0.0.0.0", 5000):
+        await asyncio.Future()  # run forever
 
-    app.run()
-
-if __name__ == '__main__':
-    main()
+asyncio.run(main())
